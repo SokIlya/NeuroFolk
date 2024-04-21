@@ -1,0 +1,14 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<div class="login-page">
+  <div class="form">
+      <h1>Регистрация</h1>
+    <form action="{{ url_for('register') }}" method="post">
+        <label for="username">Имя пользователя:</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required><br>
+        <input type="submit" value="Зарегистрироваться">
+    </form>
+      <p class="message">Уже зарегистрированы? <a href="/login">Войти</a></p>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Чат</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="chat-container">
+ <div class="chat-list">
+    <!-- Список чатов -->
+    {% for chat in chat_list %}
+      <div class="chat-list-item">{{ chat }}</div>
+    {% endfor %}
+ </div>
+ <div class="chat-window">
+    <!-- Область текущего чата -->
+    <!-- Область текущего чата -->
+    <div class="chat-messages">
+      <!-- Сообщения чата -->
+    </div>
+    <div class="chat-input">
+      <form action="{{ url_for('chat') }}" method="post">
+        <input type="text" name="message" placeholder="Напишите сообщение..." class="message-input">
+        <button type="submit" class="send-button">Отправить</button>
+      </form>
+    </div>
+ </div>
+</div>
+<script src="scripts.js"></script>
+</body>
+</html>
