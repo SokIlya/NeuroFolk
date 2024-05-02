@@ -18,8 +18,16 @@
     <!-- Область текущего чата -->
     <!-- Область текущего чата -->
     <div class="chat-messages">
-      <!-- Сообщения чата -->
+  {% for message in messages %}
+    <div class="{{ 'sent-message' if message.sent else 'received-message' }}">
+      {{ message.text }}
+      {% if not message.sent and message.image_base64 %}
+        <img src="data:image/png;base64,{{ message.image_base64 }}" alt="Received Image">
+      {% endif %}
     </div>
+  {% endfor %}
+</div>
+
     <div class="chat-input">
       <form action="{{ url_for('chat') }}" method="post">
         <input type="text" name="message" placeholder="Напишите сообщение..." class="message-input">

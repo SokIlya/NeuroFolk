@@ -198,14 +198,21 @@ body {
   max-width: 80%;
 }
 
-.sent {
-  align-self: flex-end;
-  background-color: #dcf8c6; /* Цвет фона для отправленных сообщений */
+.sent-message {
+  background-color: #DCF8C6; /* Light green for sent messages */
+  text-align: right;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
 }
 
-.received {
-  align-self: flex-start;
-  background-color: #e5e5ea; /* Цвет фона для полученных сообщений */
+.received-message {
+  background-color: #ECECEC; /* Light grey for received messages */
+  text-align: left;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
 }
+
 
 

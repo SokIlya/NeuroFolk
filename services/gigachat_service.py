@@ -1,7 +1,8 @@
 from langchain.schema import HumanMessage, SystemMessage
 from langchain.chat_models.gigachat import GigaChat
 import uuid
-from dao.dao import d
+from models.user import Message
+
 
 # Авторизация в сервисе GigaChat
 chat = GigaChat(credentials="N2I2ODFmZDQtYjlhNS00ZGFkLTk1YjQtNDU5MjE5ODgyZDVlOmMwZjUxMTZlLTBmNjEtNGY3MC05MmQ3LTVjOWQzNzFiY2Q2ZA==", verify_ssl_certs=False)
@@ -13,23 +14,25 @@ messages = [
 ]
 
 
-def ask(prompt, username, uuid):
-    # global chat, messages
+def ask(user_id, prompt):
     global chat
-    # messages.append(HumanMessage(content=prompt))
     messages = [SystemMessage(content="Ты - бот-сказочник. Рассказывай короткую сказку и предлагай слушателю придумать идею продолжения")]
-    for row in d.select("*", username, f"uuid = {uuid}"):
-        # Предполагается, что у вас есть классы SystemMessage и HumanMessage
-        # для создания объектов сообщений.
-        if row[2] == 'SystemMessage':
-            messages.append(SystemMessage(content=row[3]))
-        elif row[2] == 'HumanMessage':
-            messages.append(HumanMessage(content=row[3]))
-        # else:
-        #     messages.append(BaseMessage(content=row[3]))
+
+    for message in Message.query.filter_by(user_id=user_id).order_by(Message.timestamp).all():
+        messages.append(HumanMessage(content=message.text))
+
+    messages.append(HumanMessage(content=prompt))
+
     res = chat(messages)
-    messages.append(res)
+
     return res.content
+
+    # messages.append(HumanMessage(content=prompt))
+    # messages = [SystemMessage(content="Ты - бот-сказочник. Рассказывай короткую сказку и предлагай слушателю придумать идею продолжения")]
+    # for message in Message.query:
+    #     res = chat(messages)
+    #     messages.append(res)
+    #     return res.content
 
 
 # Функция для генерации уникального идентификатора
