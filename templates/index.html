@@ -1,11 +1,143 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login/Register</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <h1>Welcome to the Login/Register Page</h1>
-    <a href="{{ url_for('login') }}">Login/Register</a>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+    <title>НейроСказки</title>
+  </head>
+  <body>
+    <div class="sidebar">
+      <button class="new-chat-button" onclick="window.location.href='{{ url_for('index') }}'">
+        Создать новую сказку <span class="plus-sign"> + </span>
+      </button>
+      <br><br>
+      <div class="chats-block">
+        <h2>Содержание</h2>
+        {% if chats %}
+          <ul class="chat-list">
+            {% for chat in chats %}
+              <li>
+                <a href="{{ url_for('index', chat_id=chat.id) }}">{{ chat.name }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>Пока пусто...</p>
+        {% endif %}
+      </div>
+      <div class="logout-container">
+        <button class="new-chat-button" onclick="confirmLogout()">
+          Выйти
+        </button>
+      </div>
+    </div>
+    <div class="main-content">
+      {% if selected_chat %}
+        <div class="header">
+          <div class="container">
+            <h1>{{ selected_chat.name }}</h1>
+            <form method="POST" action="{{ url_for('download_pdf', chat_id=selected_chat.id) }}" style="display:inline;">
+              <button class="btn-download-pdf" type="submit">Скачать PDF</button>
+            </form>
+            <button class="btn-delete" onclick="confirmDeleteChat('{{ selected_chat.id }}', '{{ selected_chat.name }}')">Удалить</button>
+          </div>
+        </div>
+        <ul class="message-list" id="message-list">
+          {% for message in messages %}
+            {% if message.is_img %}
+              <img width="30%" src="data:image/png;base64,{{ message.content }}" alt="Received Image">
+            {% else %}
+              <li>{{ message.content }}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+        <form method="POST" action="{{ url_for('index', chat_id=selected_chat.id) }}" class="message-form">
+          {{ message_form.hidden_tag() }}
+          <div class="chat-container">
+            {{ message_form.content(class="chat-input") }}
+            {{ message_form.submit(class="chat-submit") }}
+          </div>
+        </form>
+      {% else %}
+        <div class="header">
+          <div class="container">
+            <h1>Добро пожаловать в НейроСказки &#10024;</h1>
+          </div>
+        </div>
+        <div class="chat-create">
+          <h1>НейроСказки &#10024;</h1>
+          <h2>Начало истории</h2>
+          <p>Задай краткое название сказки</p>
+          <form method="POST" action="{{ url_for('index') }}">
+            {{ form.hidden_tag() }}
+            {{ form.name(class="title-input", placeholder="Название") }} {{ form.submit(class="btn-create-chat") }}
+            <h1>Дополнительно</h1>
+            <div class="add-info">
+            <h2>Персонажи</h2>
+            <p>Выбери персонажей, которых хотел бы встретить</p>
+            <div class="checkbox-grid">
+              {% for value, label in form.characters.choices %}
+                <div class="checkbox-item">
+                  <label><input type="checkbox" name="characters" value="{{ value }}"> {{ label }}</label>
+                </div>
+              {% endfor %}
+            </div>
+            <br>
+            <p id="main-idea-field">
+              <h2>Для родителя</h2>
+              <p>Чему научить? Добавьте основную идею</p>
+              {{ form.main_idea(rows=4, cols=40) }}
+            </p>
+            </div>
+
+          </form>
+        </div>
+      {% endif %}
+    </div>
+
+    <div id="deleteChatModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('deleteChatModal')">&times;</span>
+        <p id="deleteChatMessage"></p>
+        <form id="deleteChatForm" method="POST" style="display:inline;">
+          <button type="submit">Удалить</button>
+        </form>
+        <button onclick="closeModal('deleteChatModal')">Отмена</button>
+      </div>
+    </div>
+
+
+    <div id="logoutModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('logoutModal')">&times;</span>
+        <p>Вы точно хотите выйти из аккаунта?</p>
+        <a href="{{ url_for('logout') }}"><button>Выйти</button></a>
+        <button onclick="closeModal('logoutModal')">Отмена</button>
+      </div>
+    </div>
+
+    <script>
+
+      function confirmDeleteChat(chatId, chatName) {
+        document.getElementById('deleteChatMessage').innerText = `Вы точно хотите удалить сказку "${chatName}"?`;
+        document.getElementById('deleteChatForm').action = `/delete_chat/${chatId}`;
+        document.getElementById('deleteChatModal').style.display = 'block';
+      }
+
+      function confirmLogout() {
+        document.getElementById('logoutModal').style.display = 'block';
+      }
+
+      function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const chatMessages = document.querySelector('.message-list');
+        if (chatMessages) {
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+      });
+    </script>
+  </body>
 </html>

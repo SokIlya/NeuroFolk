@@ -2,6 +2,8 @@ import json
 import time
 import requests
 
+from config import FUSION_BRAIN_API, FUSION_BRAIN_SECRET
+
 
 class Text2ImageAPI:
     def __init__(self, url, api_key, secret_key):
@@ -47,6 +49,12 @@ class Text2ImageAPI:
             time.sleep(delay)
 
     def get_image(self, prompt, style="масляные краски"):
-        uuid = self.generate(f"{prompt}; style: {style}", self.id)
-        images = self.check_generation(uuid)
+        try:
+            uuid = self.generate(f"{prompt}; style: {style}", self.id)
+            images = self.check_generation(uuid)
+        except Exception:
+            return "Fusion Brain error"
         return images[0]
+
+
+txt_to_img = Text2ImageAPI('https://api-key.fusionbrain.ai/', FUSION_BRAIN_API, FUSION_BRAIN_SECRET)

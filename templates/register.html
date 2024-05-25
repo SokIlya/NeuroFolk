@@ -1,14 +1,25 @@
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<div class="login-page">
-  <div class="form">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login_register.css') }}">
+    <title>Регистрация | НейроСказки</title>
+  </head>
+  <body>
+    <div class="login-container">
       <h1>Регистрация</h1>
-    <form action="{{ url_for('register') }}" method="post">
-        <label for="username">Имя пользователя:</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">Пароль:</label>
-        <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="Зарегистрироваться">
-    </form>
-      <p class="message">Уже зарегистрированы? <a href="/login">Войти</a></p>
-  </div>
-</div>
+      <form method="POST" action="{{ url_for('register') }}">
+        {{ form.hidden_tag() }}
+        {{ form.username(placeholder="Username") }}
+        {{ form.password(placeholder="Password") }}
+        {{ form.confirm_password(placeholder="Confirm password") }}
+        <br>
+        {{ form.submit() }}
+      </form>
+      <br>
+      <br>
+      <a class="login-button" href="{{ url_for('login') }}">Вход</a>
+    </div>
+  </body>
+</html>
