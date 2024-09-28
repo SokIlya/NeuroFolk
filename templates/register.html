@@ -11,9 +11,9 @@
       <h1>Регистрация</h1>
       <form method="POST" action="{{ url_for('register') }}">
         {{ form.hidden_tag() }}
-        {{ form.username(placeholder="Username") }}
-        {{ form.password(placeholder="Password") }}
-        {{ form.confirm_password(placeholder="Confirm password") }}
+        {{ form.username(placeholder="Имя пользователя") }}
+        {{ form.password(placeholder="Пароль") }}
+        {{ form.confirm_password(placeholder="Подтвердите пароль") }}
         <br>
         {{ form.submit() }}
       </form>
